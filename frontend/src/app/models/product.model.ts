@@ -33,6 +33,27 @@ export interface CartItem {
 }
 
 // ─── Raw shapes coming back from Spring Boot / RapidAPI ─────────────────────
+
+// Best Buy
+export interface BestBuyProductRaw {
+  sku: string;
+  name: string;
+  regularPrice: number;
+  salePrice: number;
+  image: string;
+  url: string;
+  customerReviewAverage: number;
+  customerReviewCount: number;
+  shortDescription: string;
+  onlineAvailability: boolean;
+}
+
+export interface BestBuySearchResponse {
+  products: BestBuyProductRaw[];
+  total: number;
+}
+
+
 export interface AmazonProductRaw {
   asin: string;
   product_title: string;

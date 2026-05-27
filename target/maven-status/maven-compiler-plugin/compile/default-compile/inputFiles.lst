@@ -1,6 +1,9 @@
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/service/AmazonService.java
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/controller/ProductController.java
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/model/ProductSearchResponse.java
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/PriceWiseApplication.java
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/CacheConfig.java
-/Users/saisindhoorreddypalla/Downloads/pricewise-java/src/main/java/com/pricewise/model/Product.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/CacheConfig.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/model/BestBuySearchResponse.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/model/BestBuyProduct.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/service/AmazonService.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/PriceWiseApplication.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/controller/ProductController.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/model/ProductSearchResponse.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/model/Product.java
+/Users/saisindhoorreddypalla/Documents/GitHub/pricewise/src/main/java/com/pricewise/service/BestBuyService.java

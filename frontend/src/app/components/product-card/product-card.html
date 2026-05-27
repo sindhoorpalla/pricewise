@@ -14,10 +14,38 @@
   <div class="card-body">
     <div class="product-name">{{ product().name }}</div>
 
-    @if ((product().prices[0]?.p ?? 0) > 0) {
-      <div class="product-price">${{ (product().prices[0].p).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+    <!-- Best price (large) -->
+    @if (bestDeal().p > 0) {
+      <div class="product-price">
+        ${{ bestDeal().p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+        <span class="best-store">@ {{ bestDeal().s }}</span>
+      </div>
     }
 
+    <!-- Multi-store price comparison -->
+    @if (product().prices.length > 1) {
+      <div class="price-comparison">
+        @for (price of product().prices; track price.s) {
+          <div class="price-row" [class.cheapest]="price.p === bestDeal().p && price.p > 0">
+            <span class="store-logo">
+              @if (price.s === 'Amazon') { 🟠 }
+              @else if (price.s === 'Best Buy') { 🔵 }
+              @else { 🏪 }
+            </span>
+            <span class="store-name">{{ price.s }}</span>
+            <span class="store-price">
+              @if (price.p > 0) { ${{ price.p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }} }
+              @else { — }
+            </span>
+            @if (price.p === bestDeal().p && price.p > 0 && product().prices.length > 1) {
+              <span class="best-tag">best</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Rating -->
     @if (product().rating) {
       <div class="product-rating">
         <span class="star">★</span>
