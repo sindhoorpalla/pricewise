@@ -7,43 +7,29 @@
     </svg>
     <input
       type="text"
-      placeholder="Search Amazon in real time..."
+      placeholder="Search for products..."
       [ngModel]="productSvc.searchQuery()"
       (ngModelChange)="productSvc.searchQuery.set($event)"
       (keyup.enter)="onSearch()"
     />
-    @if (productSvc.isLiveSearch()) {
-      <button class="clear-btn" (click)="clearSearch()" title="Clear search">✕</button>
-    } @else {
-      <button class="search-btn" (click)="onSearch()" title="Search Amazon">
-        @if (productSvc.isLoading()) { <span class="spin">⟳</span> } @else { ↵ }
-      </button>
-    }
+    <button class="browse-btn" (click)="onSearch()" [disabled]="productSvc.isLoading()">
+      @if (productSvc.isLoading()) {
+        <span class="spin">⟳</span>
+      } @else {
+        Browse
+      }
+    </button>
   </div>
 
-  <div class="nav-tabs">
-    <button class="nav-tab" [class.active]="activeTab==='browse'" (click)="switchTab('browse')">Browse</button>
+  <div class="nav-right">
     <button class="nav-tab" [class.active]="activeTab==='compare'" (click)="switchTab('compare')">
       Compare
-      <span class="cmp-badge" [class.visible]="compareSvc.count()>0">{{ compareSvc.count() }}</span>
+      <span class="cmp-badge" [class.visible]="compareSvc.count() > 0">{{ compareSvc.count() }}</span>
     </button>
-    <button class="nav-tab" [class.active]="activeTab==='cart'" (click)="switchTab('cart')">Cart</button>
+    <button class="nav-tab cart-tab" [class.active]="activeTab==='cart'" (click)="switchTab('cart')">
+      Cart
+      <span class="cart-badge" [class.visible]="cartSvc.count() > 0">{{ cartSvc.count() }}</span>
+    </button>
     <button class="nav-tab" [class.active]="activeTab==='sell'" (click)="switchTab('sell')">Sell</button>
   </div>
-
-  <button class="cart-btn" (click)="switchTab('cart')">
-    🛒 Cart
-    <span class="cart-badge" [class.visible]="cartSvc.count()>0">{{ cartSvc.count() }}</span>
-  </button>
 </nav>
-
-@if (productSvc.isLiveSearch()) {
-  <div class="live-banner">
-    ⚡ Showing live Amazon results for "<strong>{{ productSvc.searchQuery() }}</strong>"
-    <button (click)="clearSearch()">← Back to catalogue</button>
-  </div>
-}
-
-@if (productSvc.searchError()) {
-  <div class="error-banner">⚠ {{ productSvc.searchError() }}</div>
-}
