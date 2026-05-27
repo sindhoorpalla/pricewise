@@ -1,0 +1,45 @@
+<div class="sell-form">
+  <h2>List your product</h2>
+  <div class="form-grid">
+    <div class="form-field">
+      <label>Product name</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="e.g. Sony WH-1000XM5" />
+    </div>
+    <div class="form-field">
+      <label>Category</label>
+      <select [(ngModel)]="form.cat">
+        <option value="electronics">Electronics</option>
+        <option value="home">Home</option>
+        <option value="fashion">Fashion</option>
+        <option value="sports">Sports</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Your price ($)</label>
+      <input type="number" [(ngModel)]="form.price" placeholder="e.g. 299" />
+    </div>
+    <div class="form-field">
+      <label>Your store name</label>
+      <input type="text" [(ngModel)]="form.store" placeholder="e.g. TechDeals" />
+    </div>
+    <div class="form-field">
+      <label>Emoji icon</label>
+      <input type="text" [(ngModel)]="form.icon" placeholder="e.g. 🎧" maxlength="2" />
+    </div>
+  </div>
+  <div class="form-field">
+    <label>Description</label>
+    <textarea [(ngModel)]="form.desc" placeholder="Describe your product — specs, condition, highlights..."></textarea>
+  </div>
+  <button class="btn-list" (click)="submit()">List product →</button>
+</div>
+
+<div class="sell-perks">
+  @for (perk of perks; track perk.title) {
+    <div class="perk">
+      <div class="perk-icon">{{ perk.icon }}</div>
+      <div class="perk-title">{{ perk.title }}</div>
+      <div class="perk-desc">{{ perk.desc }}</div>
+    </div>
+  }
+</div>

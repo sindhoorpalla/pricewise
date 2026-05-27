@@ -1,0 +1,81 @@
+@if (compareProducts().length === 0) {
+  <div class="compare-empty">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M18 20V10M12 20V4M6 20v-6"/>
+    </svg>
+    <h3>Nothing to compare yet</h3>
+    <p>Go to Browse and click "Compare" on up to 4 products.</p>
+  </div>
+} @else {
+  <div class="table-wrapper">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th class="label-col"></th>
+          @for (p of compareProducts(); track p.id) {
+            <th class="product-header">{{ p.icon }} {{ p.name }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label">Description</td>
+          @for (p of compareProducts(); track p.id) {
+            <td class="desc-cell">{{ p.desc }}</td>
+          }
+        </tr>
+        <tr>
+          <td class="label">Best price</td>
+          @for (p of compareProducts(); track p.id) {
+            <td [class.winner-cell]="productSvc.bestPrice(p.prices) === lowestTotal()">
+              ${{ productSvc.bestPrice(p.prices).toLocaleString() }}
+              <span class="store-hint">@ {{ productSvc.bestDeal(p.prices).s }}</span>
+              @if (productSvc.bestPrice(p.prices) === lowestTotal()) {
+                <span class="winner-tag">best deal</span>
+              }
+            </td>
+          }
+        </tr>
+        @for (store of allStores(); track store) {
+          <tr>
+            <td class="label">{{ store }}</td>
+            @for (p of compareProducts(); track p.id) {
+              <td>
+                @if (priceForStore(p.id, store) !== null) {
+                  <span class="store-price">${{ priceForStore(p.id, store)!.toLocaleString() }}</span>
+                } @else {
+                  <span class="no-store">—</span>
+                }
+              </td>
+            }
+          </tr>
+        }
+        <tr>
+          <td class="label"></td>
+          @for (p of compareProducts(); track p.id) {
+            <td>
+              <button class="btn-add-cart" (click)="addToCart(p.id)">+ Add to cart</button>
+            </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="btn-ai" (click)="aiRecommend()">✦ AI recommendation</button>
+
+  @if (aiVisible()) {
+    <div class="ai-rec">
+      <div class="ai-rec-header">
+        ✦ {{ aiLoading() ? 'Analyzing deals' : 'AI recommendation' }}
+      </div>
+      @if (aiLoading()) {
+        <div class="loading-dots">
+          <span></span><span></span><span></span>
+        </div>
+      } @else {
+        <p>{{ aiText() }}</p>
+      }
+    </div>
+  }
+}

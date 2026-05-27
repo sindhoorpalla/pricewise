@@ -1,0 +1,28 @@
+<div class="product-card" [class.in-compare]="inCompare()">
+  <span class="product-icon">{{ product().icon }}</span>
+  <div class="product-name">{{ product().name }}</div>
+  <div class="product-desc">{{ product().desc }}</div>
+
+  <div class="price-list">
+    @for (price of product().prices; track price.s) {
+      <div class="price-item">
+        <span class="price-store">{{ price.s }}</span>
+        <span class="price-val" [class.best]="price.p === bestDeal().p">
+          ${{ price.p.toLocaleString() }}
+          @if (price.p === bestDeal().p) {
+            <span class="best-label">best</span>
+          }
+        </span>
+      </div>
+    }
+  </div>
+
+  <div class="card-btns">
+    <button class="btn-cmp" [class.on]="inCompare()" (click)="compareToggled.emit()">
+      {{ inCompare() ? '✓ Added' : '⇄ Compare' }}
+    </button>
+    <button class="btn-add" [class.on]="inCart()" (click)="cartToggled.emit()">
+      {{ inCart() ? '✓ In cart' : '+ Cart' }}
+    </button>
+  </div>
+</div>

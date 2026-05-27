@@ -1,0 +1,79 @@
+.cart-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text2);
+  font-size: 15px;
+}
+.cart-empty span { font-size: 4rem; display: block; margin-bottom: 1rem; }
+
+.btn-browse {
+  padding: 10px 24px;
+  border-radius: 40px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cart-wrapper { max-width: 600px; }
+
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  margin-bottom: 1.5rem;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-icon { font-size: 2rem; }
+.cart-info { flex: 1; }
+.cart-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.cart-store { font-size: 12px; color: var(--text2); }
+.cart-price { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+.cart-remove {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.cart-remove:hover { color: var(--danger); }
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0 1rem;
+}
+.cart-total-label { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+.cart-total-price { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); }
+
+.btn-checkout {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  letter-spacing: -0.3px;
+  transition: all 0.15s;
+}
+.btn-checkout:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0, 229, 160, 0.25); }
+
+.cart-note { text-align: center; font-size: 12px; color: var(--text3); margin-top: 12px; }

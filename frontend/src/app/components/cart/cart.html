@@ -1,0 +1,34 @@
+@if (cartSvc.count() === 0) {
+  <div class="cart-empty">
+    <span>🛒</span>
+    Your cart is empty.
+    <br/><br/>
+    <button class="btn-browse" (click)="browseTrigger.emit()">Browse products</button>
+  </div>
+} @else {
+  <div class="cart-wrapper">
+    <h2>{{ cartSvc.count() }} item{{ cartSvc.count() > 1 ? 's' : '' }} — best price selected</h2>
+
+    @for (item of cartSvc.items(); track item.id) {
+      <div class="cart-item">
+        <div class="cart-icon">{{ item.icon }}</div>
+        <div class="cart-info">
+          <div class="cart-name">{{ item.name }}</div>
+          <div class="cart-store">Best price via {{ item.store }}</div>
+        </div>
+        <div class="cart-price">${{ item.price.toLocaleString() }}</div>
+        <button class="cart-remove" (click)="cartSvc.remove(item.id)" aria-label="Remove">✕</button>
+      </div>
+    }
+
+    <div class="cart-total-row">
+      <div class="cart-total-label">Total</div>
+      <div class="cart-total-price">${{ cartSvc.total().toLocaleString() }}</div>
+    </div>
+
+    <button class="btn-checkout" (click)="checkout()">
+      🔒 Secure checkout — ${{ cartSvc.total().toLocaleString() }}
+    </button>
+    <p class="cart-note">✦ Best prices verified across all stores</p>
+  </div>
+}

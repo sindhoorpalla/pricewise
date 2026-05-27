@@ -1,0 +1,22 @@
+<app-navbar (tabChange)="onTabChange($event)" />
+
+<app-hero />
+
+<main>
+  @if (activeTab() === 'browse') {
+    <app-browse (goToCompare)="onTabChange('compare')" />
+  }
+  @if (activeTab() === 'compare') {
+    <app-compare />
+  }
+  @if (activeTab() === 'cart') {
+    <app-cart (browseTrigger)="goToBrowse()" />
+  }
+  @if (activeTab() === 'sell') {
+    <app-sell (listSuccess)="goToBrowse()" />
+  }
+</main>
+
+<div class="toast" [class.show]="toastSvc.visible()">
+  {{ toastSvc.message() }}
+</div>

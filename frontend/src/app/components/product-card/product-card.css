@@ -1,0 +1,88 @@
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+  pointer-events: none;
+}
+.product-card:hover { transform: translateY(-2px); border-color: var(--border2); }
+.product-card:hover::before { border-color: rgba(0, 229, 160, 0.2); }
+.product-card.in-compare { border-color: var(--accent2); }
+
+.product-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+
+.product-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.product-desc { font-size: 12px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
+
+.price-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: var(--radius2);
+  background: var(--surface2);
+}
+
+.price-store { color: var(--text2); }
+.price-val { font-weight: 500; }
+.price-val.best { color: var(--accent); }
+
+.best-label {
+  font-size: 10px;
+  background: rgba(0, 229, 160, 0.15);
+  color: var(--accent);
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.card-btns { display: flex; gap: 8px; }
+
+.btn-cmp {
+  flex: 1;
+  padding: 7px;
+  font-size: 12px;
+  border-radius: var(--radius2);
+  cursor: pointer;
+  border: 1px solid var(--accent2);
+  background: transparent;
+  color: var(--accent2);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.btn-cmp:hover, .btn-cmp.on { background: var(--accent2); color: white; }
+
+.btn-add {
+  flex: 1;
+  padding: 7px;
+  font-size: 12px;
+  border-radius: var(--radius2);
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.btn-add:hover, .btn-add.on { background: var(--accent); color: #000; font-weight: 500; }

@@ -1,0 +1,27 @@
+<nav>
+  <div class="logo">Price<span>Wise</span></div>
+
+  <div class="nav-search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder="Search any product..."
+           [ngModel]="productSvc.searchQuery()"
+           (ngModelChange)="productSvc.searchQuery.set($event)" />
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab" [class.active]="activeTab==='browse'" (click)="switchTab('browse')">Browse</button>
+    <button class="nav-tab" [class.active]="activeTab==='compare'" (click)="switchTab('compare')">
+      Compare
+      <span class="cmp-badge" [class.visible]="compareSvc.count()>0">{{ compareSvc.count() }}</span>
+    </button>
+    <button class="nav-tab" [class.active]="activeTab==='cart'" (click)="switchTab('cart')">Cart</button>
+    <button class="nav-tab" [class.active]="activeTab==='sell'" (click)="switchTab('sell')">Sell</button>
+  </div>
+
+  <button class="cart-btn" (click)="switchTab('cart')">
+    🛒 Cart
+    <span class="cart-badge" [class.visible]="cartSvc.count()>0">{{ cartSvc.count() }}</span>
+  </button>
+</nav>
