@@ -34,6 +34,22 @@ export interface CartItem {
 
 // ─── Raw shapes coming back from Spring Boot / RapidAPI ─────────────────────
 
+// Target
+export interface TargetProductRaw {
+  tcin: string;
+  title: string;
+  price: number;
+  formattedPrice: string;
+  imageUrl: string;
+  buyUrl: string;
+  rating: number;
+  reviewCount: number;
+}
+
+export interface TargetSearchResponse {
+  products: TargetProductRaw[];
+}
+
 // Best Buy
 export interface BestBuyProductRaw {
   sku: string;

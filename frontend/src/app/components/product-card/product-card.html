@@ -30,6 +30,7 @@
             <span class="store-logo">
               @if (price.s === 'Amazon') { 🟠 }
               @else if (price.s === 'Best Buy') { 🔵 }
+              @else if (price.s === 'Target') { 🎯 }
               @else { 🏪 }
             </span>
             <span class="store-name">{{ price.s }}</span>

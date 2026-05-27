@@ -5,6 +5,7 @@ import {
   Product, Price,
   AmazonProductRaw, SearchApiResponse,
   BestBuyProductRaw, BestBuySearchResponse,
+  TargetProductRaw, TargetSearchResponse,
   OffersApiResponse
 } from '../models/product.model';
 
@@ -55,24 +56,25 @@ export class ProductService {
     this.isLoading.set(true);
     this.searchError.set('');
 
-    // Fire Amazon + Best Buy in parallel
-    const [amazonResult, bestBuyResult] = await Promise.allSettled([
+    // Fire Amazon + Best Buy + Target in parallel
+    const [amazonResult, bestBuyResult, targetResult] = await Promise.allSettled([
       this._fetchAmazon(query),
       this._fetchBestBuy(query),
+      this._fetchTarget(query),
     ]);
 
     const amazonProducts  = amazonResult.status  === 'fulfilled' ? amazonResult.value  : [];
     const bestBuyProducts = bestBuyResult.status === 'fulfilled' ? bestBuyResult.value : [];
+    const targetProducts  = targetResult.status  === 'fulfilled' ? targetResult.value  : [];
 
-    if (bestBuyResult.status === 'rejected') {
-      this.searchError.set('Best Buy data unavailable — showing Amazon only.');
-    }
-    if (amazonResult.status === 'rejected') {
-      this.searchError.set('Amazon data unavailable — showing Best Buy only.');
-    }
+    const errors: string[] = [];
+    if (amazonResult.status  === 'rejected') errors.push('Amazon');
+    if (bestBuyResult.status === 'rejected') errors.push('Best Buy');
+    if (targetResult.status  === 'rejected') errors.push('Target');
+    if (errors.length) this.searchError.set(`${errors.join(', ')} data unavailable.`);
 
-    // Merge: add Best Buy price to matching Amazon products
-    const merged = this._mergeResults(amazonProducts, bestBuyProducts);
+    // Merge all three sources
+    const merged = this._mergeResults(amazonProducts, bestBuyProducts, targetProducts);
     this._liveResults.set(merged);
     this.isLiveSearch.set(true);
     this.isLoading.set(false);
@@ -139,35 +141,43 @@ export class ProductService {
     return (res.products ?? []).map(r => this._mapBestBuy(r));
   }
 
+  private async _fetchTarget(query: string): Promise<Product[]> {
+    const res = await firstValueFrom(
+      this.http.get<TargetSearchResponse>(`${API_BASE}/target/search?q=${encodeURIComponent(query)}`)
+    );
+    return (res.products ?? []).map(r => this._mapTarget(r));
+  }
+
   /**
-   * Match Best Buy products to Amazon products by name similarity,
-   * then attach the Best Buy price to the matching Amazon card.
-   * Unmatched Best Buy products are appended as standalone cards.
+   * Merge Amazon (primary), Best Buy, and Target results.
+   * Matching products share a card with all available prices shown.
    */
-  private _mergeResults(amazon: Product[], bestBuy: Product[]): Product[] {
+  private _mergeResults(amazon: Product[], bestBuy: Product[], target: Product[]): Product[] {
     const merged = amazon.map(ap => ({ ...ap }));
-    const unmatched: Product[] = [];
 
-    for (const bp of bestBuy) {
-      const bbName = bp.name.toLowerCase();
-      const match = merged.find(ap => {
-        const amName = ap.name.toLowerCase();
-        // Simple keyword overlap: share ≥2 significant words
-        const words = bbName.split(' ').filter(w => w.length > 3);
-        return words.filter(w => amName.includes(w)).length >= 2;
-      });
-
-      if (match) {
-        const bbPrice = bp.prices[0];
-        if (bbPrice && bbPrice.p > 0 && !match.prices.find(p => p.s === 'Best Buy')) {
-          match.prices = [...match.prices, bbPrice];
+    const attachPrice = (sources: Product[], storeName: string) => {
+      const unmatched: Product[] = [];
+      for (const sp of sources) {
+        const spName = sp.name.toLowerCase();
+        const match = merged.find(ap => {
+          const words = spName.split(' ').filter(w => w.length > 3);
+          return words.filter(w => ap.name.toLowerCase().includes(w)).length >= 2;
+        });
+        if (match) {
+          const price = sp.prices[0];
+          if (price && price.p > 0 && !match.prices.find(p => p.s === storeName)) {
+            match.prices = [...match.prices, price];
+          }
+        } else {
+          unmatched.push(sp);
         }
-      } else {
-        unmatched.push(bp);
       }
-    }
+      merged.push(...unmatched);
+    };
 
-    return [...merged, ...unmatched];
+    attachPrice(bestBuy, 'Best Buy');
+    attachPrice(target, 'Target');
+    return merged;
   }
 
   private _localFiltered(): Product[] {
@@ -204,6 +214,22 @@ export class ProductService {
       isPrime:    r.is_prime,
       salesVolume:r.sales_volume,
       prices:     [{ s: 'Amazon', p: price }],
+    };
+  }
+
+  private _mapTarget(r: TargetProductRaw): Product {
+    return {
+      id:         this._hash('tgt_' + r.tcin),
+      name:       r.title?.slice(0, 80) ?? 'Target Product',
+      cat:        'electronics',
+      icon:       '🎯',
+      desc:       '',
+      source:     'amazon',
+      photo:      r.imageUrl,
+      productUrl: r.buyUrl,
+      rating:     r.rating?.toString(),
+      numRatings: r.reviewCount,
+      prices:     [{ s: 'Target', p: r.price ?? 0 }],
     };
   }
 

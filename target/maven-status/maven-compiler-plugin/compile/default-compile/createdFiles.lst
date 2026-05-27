@@ -1,8 +1,10 @@
+com/pricewise/model/TargetProduct.class
 com/pricewise/service/AmazonService.class
 com/pricewise/model/ProductSearchResponse$SearchData.class
 com/pricewise/CacheConfig.class
 com/pricewise/model/ProductSearchResponse.class
 com/pricewise/controller/ProductController.class
+com/pricewise/service/TargetService.class
 com/pricewise/model/BestBuySearchResponse.class
 com/pricewise/model/BestBuyProduct.class
 com/pricewise/model/Product.class
