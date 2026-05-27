@@ -1,6 +1,31 @@
 <div class="product-card" [class.in-compare]="inCompare()">
-  <span class="product-icon">{{ product().icon }}</span>
+
+  <!-- Thumbnail: real photo for Amazon results, emoji for local -->
+  @if (product().photo) {
+    <div class="product-thumb">
+      <img [src]="product().photo" [alt]="product().name" loading="lazy" />
+      @if (product().isPrime) {
+        <span class="prime-badge">prime</span>
+      }
+    </div>
+  } @else {
+    <span class="product-icon">{{ product().icon }}</span>
+  }
+
   <div class="product-name">{{ product().name }}</div>
+
+  <div class="product-meta">
+    @if (product().rating) {
+      <span class="rating">★ {{ product().rating }}</span>
+      @if (product().numRatings) {
+        <span class="rating-count">({{ product().numRatings!.toLocaleString() }})</span>
+      }
+    }
+    @if (product().salesVolume) {
+      <span class="sales-vol">{{ product().salesVolume }} sold</span>
+    }
+  </div>
+
   <div class="product-desc">{{ product().desc }}</div>
 
   <div class="price-list">
@@ -8,8 +33,12 @@
       <div class="price-item">
         <span class="price-store">{{ price.s }}</span>
         <span class="price-val" [class.best]="price.p === bestDeal().p">
-          ${{ price.p.toLocaleString() }}
-          @if (price.p === bestDeal().p) {
+          @if (price.p > 0) {
+            ${{ price.p.toLocaleString() }}
+          } @else {
+            <span style="color:var(--text3)">—</span>
+          }
+          @if (price.p === bestDeal().p && price.p > 0) {
             <span class="best-label">best</span>
           }
         </span>
@@ -25,4 +54,10 @@
       {{ inCart() ? '✓ In cart' : '+ Cart' }}
     </button>
   </div>
+
+  @if (product().productUrl) {
+    <a class="amazon-link" [href]="product().productUrl" target="_blank" rel="noopener">
+      View on Amazon ↗
+    </a>
+  }
 </div>

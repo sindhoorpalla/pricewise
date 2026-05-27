@@ -1,25 +1,45 @@
-<div class="filters">
-  @for (cat of categories; track cat.key) {
-    <button class="filter-chip"
-            [class.active]="productSvc.activeCategory() === cat.key"
-            (click)="setCategory(cat.key)">
-      {{ cat.label }}
-    </button>
-  }
-  <select class="sort-select" (change)="setSort($event)">
-    <option value="name">Sort: Name</option>
-    <option value="low">Price: Low → High</option>
-    <option value="high">Price: High → Low</option>
-  </select>
-</div>
+@if (!productSvc.isLiveSearch()) {
+  <div class="filters">
+    @for (cat of categories; track cat.key) {
+      <button class="filter-chip"
+              [class.active]="productSvc.activeCategory() === cat.key"
+              (click)="setCategory(cat.key)">
+        {{ cat.label }}
+      </button>
+    }
+    <select class="sort-select" (change)="setSort($event)">
+      <option value="name">Sort: Name</option>
+      <option value="low">Price: Low → High</option>
+      <option value="high">Price: High → Low</option>
+    </select>
+  </div>
+}
 
-<div class="products-grid">
-  @for (product of productSvc.filteredProducts(); track product.id) {
-    <app-product-card
-      [product]="product"
-      (compareToggled)="toggleCompare(product)"
-      (cartToggled)="addToCart(product)" />
-  } @empty {
-    <div class="no-results">No products found.</div>
-  }
-</div>
+@if (productSvc.isLiveSearch()) {
+  <div class="live-header">
+    <span>{{ productSvc.filteredProducts().length }} Amazon results</span>
+    <select class="sort-select" (change)="setSort($event)">
+      <option value="name">Sort: Name</option>
+      <option value="low">Price: Low → High</option>
+      <option value="high">Price: High → Low</option>
+    </select>
+  </div>
+}
+
+@if (productSvc.isLoading()) {
+  <div class="loading-state">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <p>Fetching live Amazon prices…</p>
+  </div>
+} @else {
+  <div class="products-grid">
+    @for (product of productSvc.filteredProducts(); track product.id) {
+      <app-product-card
+        [product]="product"
+        (compareToggled)="toggleCompare(product)"
+        (cartToggled)="addToCart(product)" />
+    } @empty {
+      <div class="no-results">No products found.</div>
+    }
+  </div>
+}

@@ -17,7 +17,7 @@ export class NavbarComponent {
   readonly tabChange = output<Tab>();
 
   protected productSvc = inject(ProductService);
-  protected cartSvc = inject(CartService);
+  protected cartSvc    = inject(CartService);
   protected compareSvc = inject(CompareService);
 
   activeTab: Tab = 'browse';
@@ -25,5 +25,16 @@ export class NavbarComponent {
   switchTab(tab: Tab): void {
     this.activeTab = tab;
     this.tabChange.emit(tab);
+  }
+
+  onSearch(): void {
+    const q = this.productSvc.searchQuery().trim();
+    if (!q) return;
+    this.productSvc.searchAmazon(q);
+    this.switchTab('browse');
+  }
+
+  clearSearch(): void {
+    this.productSvc.clearSearch();
   }
 }
