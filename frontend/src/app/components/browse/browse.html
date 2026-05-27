@@ -1,30 +1,17 @@
-@if (!productSvc.isLiveSearch()) {
-  <div class="filters">
-    @for (cat of categories; track cat.key) {
-      <button class="filter-chip"
-              [class.active]="productSvc.activeCategory() === cat.key"
-              (click)="setCategory(cat.key)">
-        {{ cat.label }}
-      </button>
-    }
-    <select class="sort-select" (change)="setSort($event)">
-      <option value="name">Sort: Name</option>
-      <option value="low">Price: Low → High</option>
-      <option value="high">Price: High → Low</option>
-    </select>
-  </div>
-}
-
-@if (productSvc.isLiveSearch()) {
-  <div class="live-header">
-    <span>{{ productSvc.filteredProducts().length }} Amazon results</span>
-    <select class="sort-select" (change)="setSort($event)">
-      <option value="name">Sort: Name</option>
-      <option value="low">Price: Low → High</option>
-      <option value="high">Price: High → Low</option>
-    </select>
-  </div>
-}
+<div class="category-bar">
+  @for (cat of categories; track cat.key) {
+    <button class="cat-chip"
+            [class.active]="productSvc.activeCategory() === cat.key"
+            (click)="selectCategory(cat)">
+      {{ cat.label }}
+    </button>
+  }
+  <select class="sort-select" (change)="setSort($event)">
+    <option value="name">Sort: Relevance</option>
+    <option value="low">Price: Low → High</option>
+    <option value="high">Price: High → Low</option>
+  </select>
+</div>
 
 @if (productSvc.isLoading()) {
   <div class="loading-state">

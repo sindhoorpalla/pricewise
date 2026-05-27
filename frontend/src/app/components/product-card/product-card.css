@@ -2,123 +2,103 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
   overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
-.product-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius);
-  border: 1px solid transparent;
-  transition: border-color 0.2s;
-  pointer-events: none;
+.product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
-.product-card:hover { transform: translateY(-2px); border-color: var(--border2); }
-.product-card:hover::before { border-color: rgba(0, 229, 160, 0.2); }
 .product-card.in-compare { border-color: var(--accent2); }
 
-.product-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
-
-.product-thumb {
+/* ── Image area ── */
+.card-image {
   position: relative;
+  background: #fff;
   width: 100%;
-  height: 160px;
-  margin-bottom: 12px;
-  border-radius: var(--radius2);
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  background: var(--surface2);
 }
-.product-thumb img {
+.card-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 8px;
+  padding: 16px;
+}
+.card-emoji {
+  font-size: 4rem;
 }
 .prime-badge {
   position: absolute;
-  bottom: 6px;
-  left: 6px;
-  background: #00A8E0;
-  color: white;
-  font-size: 10px;
+  bottom: 10px;
+  left: 10px;
+  background: #232F3E;
+  color: #00A8E0;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 3px;
-  letter-spacing: 0.5px;
-  font-style: italic;
+  padding: 3px 9px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(0, 168, 224, 0.4);
 }
 
-.product-meta {
+/* ── Card body ── */
+.card-body {
+  padding: 14px 16px 16px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
-  font-size: 11px;
-  margin-bottom: 4px;
-  flex-wrap: wrap;
+  flex: 1;
 }
-.rating { color: var(--gold); font-weight: 600; }
-.rating-count { color: var(--text3); }
-.sales-vol {
-  color: var(--text3);
-  font-size: 10px;
-  margin-left: auto;
-}
-
-.amazon-link {
-  display: block;
-  text-align: center;
-  font-size: 11px;
-  color: var(--text3);
-  text-decoration: none;
-  margin-top: 8px;
-  transition: color 0.15s;
-}
-.amazon-link:hover { color: var(--accent); }
 
 .product-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-price {
   font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.product-desc { font-size: 12px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
-
-.price-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-
-.price-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  padding: 5px 8px;
-  border-radius: var(--radius2);
-  background: var(--surface2);
-}
-
-.price-store { color: var(--text2); }
-.price-val { font-weight: 500; }
-.price-val.best { color: var(--accent); }
-
-.best-label {
-  font-size: 10px;
-  background: rgba(0, 229, 160, 0.15);
+  font-size: 26px;
+  font-weight: 700;
   color: var(--accent);
-  padding: 1px 6px;
-  border-radius: 4px;
-  margin-left: 4px;
+  letter-spacing: -0.5px;
+  margin-top: 2px;
 }
 
-.card-btns { display: flex; gap: 8px; }
+.product-rating {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  gap: 3px;
+}
+.star { color: var(--gold); }
+.rating-val { color: var(--text); font-weight: 500; }
+.rating-count { color: var(--text2); }
+
+/* ── Buttons ── */
+.card-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
 
 .btn-cmp {
   flex: 1;
-  padding: 7px;
-  font-size: 12px;
+  padding: 8px;
+  font-size: 13px;
   border-radius: var(--radius2);
   cursor: pointer;
   border: 1px solid var(--accent2);
@@ -131,8 +111,8 @@
 
 .btn-add {
   flex: 1;
-  padding: 7px;
-  font-size: 12px;
+  padding: 8px;
+  font-size: 13px;
   border-radius: var(--radius2);
   cursor: pointer;
   border: 1px solid var(--accent);

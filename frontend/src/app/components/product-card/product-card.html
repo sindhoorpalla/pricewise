@@ -1,63 +1,40 @@
 <div class="product-card" [class.in-compare]="inCompare()">
 
-  <!-- Thumbnail: real photo for Amazon results, emoji for local -->
-  @if (product().photo) {
-    <div class="product-thumb">
+  <div class="card-image">
+    @if (product().photo) {
       <img [src]="product().photo" [alt]="product().name" loading="lazy" />
-      @if (product().isPrime) {
-        <span class="prime-badge">prime</span>
-      }
-    </div>
-  } @else {
-    <span class="product-icon">{{ product().icon }}</span>
-  }
-
-  <div class="product-name">{{ product().name }}</div>
-
-  <div class="product-meta">
-    @if (product().rating) {
-      <span class="rating">★ {{ product().rating }}</span>
-      @if (product().numRatings) {
-        <span class="rating-count">({{ product().numRatings!.toLocaleString() }})</span>
-      }
+    } @else {
+      <span class="card-emoji">{{ product().icon }}</span>
     }
-    @if (product().salesVolume) {
-      <span class="sales-vol">{{ product().salesVolume }} sold</span>
+    @if (product().isPrime) {
+      <span class="prime-badge">✦ Prime</span>
     }
   </div>
 
-  <div class="product-desc">{{ product().desc }}</div>
+  <div class="card-body">
+    <div class="product-name">{{ product().name }}</div>
 
-  <div class="price-list">
-    @for (price of product().prices; track price.s) {
-      <div class="price-item">
-        <span class="price-store">{{ price.s }}</span>
-        <span class="price-val" [class.best]="price.p === bestDeal().p">
-          @if (price.p > 0) {
-            ${{ price.p.toLocaleString() }}
-          } @else {
-            <span style="color:var(--text3)">—</span>
-          }
-          @if (price.p === bestDeal().p && price.p > 0) {
-            <span class="best-label">best</span>
-          }
-        </span>
+    @if (product().prices[0]?.p > 0) {
+      <div class="product-price">${{ product().prices[0].p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+    }
+
+    @if (product().rating) {
+      <div class="product-rating">
+        <span class="star">★</span>
+        <span class="rating-val">{{ product().rating }}</span>
+        @if (product().numRatings) {
+          <span class="rating-count"> · {{ product().numRatings!.toLocaleString() }} reviews</span>
+        }
       </div>
     }
-  </div>
 
-  <div class="card-btns">
-    <button class="btn-cmp" [class.on]="inCompare()" (click)="compareToggled.emit()">
-      {{ inCompare() ? '✓ Added' : '⇄ Compare' }}
-    </button>
-    <button class="btn-add" [class.on]="inCart()" (click)="cartToggled.emit()">
-      {{ inCart() ? '✓ In cart' : '+ Cart' }}
-    </button>
+    <div class="card-btns">
+      <button class="btn-cmp" [class.on]="inCompare()" (click)="compareToggled.emit()">
+        ⇄ {{ inCompare() ? 'Added' : 'Compare' }}
+      </button>
+      <button class="btn-add" [class.on]="inCart()" (click)="cartToggled.emit()">
+        {{ inCart() ? '✓ In cart' : '+ Cart' }}
+      </button>
+    </div>
   </div>
-
-  @if (product().productUrl) {
-    <a class="amazon-link" [href]="product().productUrl" target="_blank" rel="noopener">
-      View on Amazon ↗
-    </a>
-  }
 </div>
