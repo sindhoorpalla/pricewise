@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: pricewise
+    runtime: java
+    plan: free
+    branch: main
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/pricewise-1.0.0.jar
+    envVars:
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: JAVA_VERSION
+        value: 17
