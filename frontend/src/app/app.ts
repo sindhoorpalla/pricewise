@@ -1,6 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { NavbarComponent, Tab } from './components/navbar/navbar';
-import { HeroComponent } from './components/hero/hero';
+import { StatusBarComponent } from './components/status-bar/status-bar';
 import { BrowseComponent } from './components/browse/browse';
 import { CompareComponent } from './components/compare/compare';
 import { CartComponent } from './components/cart/cart';
@@ -12,7 +12,7 @@ import { ToastService } from './services/toast.service';
   standalone: true,
   imports: [
     NavbarComponent,
-    HeroComponent,
+    StatusBarComponent,
     BrowseComponent,
     CompareComponent,
     CartComponent,

@@ -1,0 +1,10 @@
+@if (!checking()) {
+  <div class="status-bar" [class.connected]="connected()" [class.disconnected]="!connected()">
+    <span class="dot"></span>
+    @if (connected()) {
+      Java backend connected · PriceWise API v1.0.0
+    } @else {
+      Backend offline — showing cached data
+    }
+  </div>
+}

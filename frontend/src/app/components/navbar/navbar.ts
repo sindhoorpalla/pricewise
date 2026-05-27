@@ -30,11 +30,8 @@ export class NavbarComponent {
   onSearch(): void {
     const q = this.productSvc.searchQuery().trim();
     if (!q) return;
+    this.productSvc.activeCategory.set('');
     this.productSvc.searchAmazon(q);
     this.switchTab('browse');
-  }
-
-  clearSearch(): void {
-    this.productSvc.clearSearch();
   }
 }
