@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PriceWise — Compare Prices, Buy Smart</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1c1c1c;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0f0f0;
+  --text2: #888;
+  --text3: #555;
+  --accent: #00e5a0;
+  --accent2: #0066ff;
+  --accent3: #ff6b35;
+  --danger: #ff4444;
+  --gold: #ffd700;
+  --radius: 12px;
+  --radius2: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+/* NAV */
+nav { display: flex; align-items: center; gap: 16px; padding: 1rem 2rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); z-index: 100; }
+.logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+.logo span { color: var(--accent); }
+.nav-search { flex: 1; max-width: 480px; position: relative; }
+.nav-search input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 40px; padding: 10px 20px 10px 44px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+.nav-search input:focus { border-color: var(--accent); }
+.nav-search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); opacity: 0.4; }
+.nav-tabs { display: flex; gap: 4px; margin-left: auto; }
+.nav-tab { padding: 8px 16px; border-radius: 40px; font-size: 13px; cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--text2); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.nav-tab:hover { color: var(--text); border-color: var(--border2); }
+.nav-tab.active { background: var(--accent); color: #000; font-weight: 500; }
+.cart-btn { position: relative; padding: 8px 18px; border-radius: 40px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.cart-btn:hover { border-color: var(--accent); color: var(--accent); }
+.cart-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 600; display: none; }
+
+/* HERO */
+.hero { text-align: center; padding: 4rem 2rem 3rem; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,229,160,0.12), transparent); }
+.hero-tag { display: inline-block; background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3); color: var(--accent); border-radius: 40px; padding: 4px 14px; font-size: 12px; font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
+.hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p { color: var(--text2); font-size: 16px; max-width: 500px; margin: 0 auto 2rem; line-height: 1.7; }
+.hero-stats { display: flex; justify-content: center; gap: 3rem; }
+.hero-stat { text-align: center; }
+.hero-stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: var(--accent); }
+.hero-stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+/* MAIN */
+main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* FILTERS */
+.filters { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; align-items: center; }
+.filter-chip { padding: 6px 16px; border-radius: 40px; font-size: 13px; cursor: pointer; border: 1px solid var(--border2); background: transparent; color: var(--text2); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.filter-chip:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+.filter-chip.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
+.sort-select { margin-left: auto; background: var(--surface); border: 1px solid var(--border2); color: var(--text2); border-radius: var(--radius2); padding: 6px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; outline: none; }
+
+/* PRODUCTS */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.product-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.product-card::before { content: ''; position: absolute; inset: 0; border-radius: var(--radius); border: 1px solid transparent; transition: border-color 0.2s; }
+.product-card:hover { transform: translateY(-2px); border-color: var(--border2); }
+.product-card:hover::before { border-color: rgba(0,229,160,0.2); }
+.product-card.in-compare { border-color: var(--accent2); }
+.product-icon { font-size: 3rem; margin-bottom: 12px; display: block; }
+.product-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.product-desc { font-size: 12px; color: var(--text2); margin-bottom: 14px; line-height: 1.5; }
+.price-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.price-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 5px 8px; border-radius: var(--radius2); background: var(--surface2); }
+.price-store { color: var(--text2); }
+.price-val { font-weight: 500; }
+.price-val.best { color: var(--accent); }
+.best-label { font-size: 10px; background: rgba(0,229,160,0.15); color: var(--accent); padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
+.card-btns { display: flex; gap: 8px; }
+.btn-cmp { flex: 1; padding: 7px; font-size: 12px; border-radius: var(--radius2); cursor: pointer; border: 1px solid var(--accent2); background: transparent; color: var(--accent2); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.btn-cmp:hover, .btn-cmp.on { background: var(--accent2); color: white; }
+.btn-add { flex: 1; padding: 7px; font-size: 12px; border-radius: var(--radius2); cursor: pointer; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.btn-add:hover, .btn-add.on { background: var(--accent); color: #000; font-weight: 500; }
+
+/* COMPARE */
+.compare-empty { text-align: center; padding: 4rem 2rem; color: var(--text2); }
+.compare-empty svg { display: block; margin: 0 auto 1rem; opacity: 0.3; }
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th, .compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; text-align: left; }
+.compare-table th { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; background: var(--surface); }
+.compare-table th.product-header { background: var(--surface2); border-radius: var(--radius2); }
+.compare-table td.label { color: var(--text2); font-size: 12px; }
+.compare-table td.winner-cell { background: rgba(0,229,160,0.05); color: var(--accent); font-weight: 500; }
+.winner-tag { font-size: 10px; background: rgba(0,229,160,0.15); color: var(--accent); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-left: 6px; }
+.ai-rec { background: var(--surface); border: 1px solid rgba(0,229,160,0.2); border-radius: var(--radius); padding: 1.25rem; margin-top: 1.5rem; font-size: 14px; line-height: 1.7; color: var(--text2); min-height: 60px; }
+.ai-rec-header { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.btn-ai { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 13px; border-radius: 40px; cursor: pointer; border: 1px solid rgba(0,229,160,0.4); background: rgba(0,229,160,0.08); color: var(--accent); font-family: 'DM Sans', sans-serif; margin-top: 1.5rem; transition: all 0.15s; }
+.btn-ai:hover { background: rgba(0,229,160,0.15); }
+
+/* CART */
+.cart-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.cart-icon { font-size: 2rem; }
+.cart-info { flex: 1; }
+.cart-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.cart-store { font-size: 12px; color: var(--text2); }
+.cart-price { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.cart-remove { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; padding: 4px; transition: color 0.15s; }
+.cart-remove:hover { color: var(--danger); }
+.cart-total-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0 1rem; }
+.cart-total-label { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+.cart-total-price { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); }
+.btn-checkout { width: 100%; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 40px; cursor: pointer; background: var(--accent); color: #000; border: none; font-family: 'Syne', sans-serif; letter-spacing: -0.3px; transition: all 0.15s; }
+.btn-checkout:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,229,160,0.25); }
+.cart-empty { text-align: center; padding: 4rem 2rem; color: var(--text2); font-size: 15px; }
+.cart-empty span { font-size: 4rem; display: block; margin-bottom: 1rem; }
+
+/* SELL */
+.sell-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; max-width: 600px; }
+.sell-form h2 { font-size: 22px; margin-bottom: 1.5rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 6px; letter-spacing: 0.3px; text-transform: uppercase; }
+.form-field input, .form-field select, .form-field textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius2); padding: 10px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { min-height: 80px; resize: vertical; }
+.form-field select option { background: #1c1c1c; }
+.btn-list { padding: 12px 28px; border-radius: 40px; background: var(--accent); color: #000; border: none; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 14px; transition: all 0.15s; }
+.btn-list:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,160,0.25); }
+.sell-perks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2rem; max-width: 600px; }
+.perk { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius2); padding: 1rem; }
+.perk-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.perk-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.perk-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* LOADING */
+.loading-dots { display: inline-flex; gap: 4px; align-items: center; }
+.loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: bounce 0.8s infinite; }
+.loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+
+/* SUCCESS TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface2); border: 1px solid rgba(0,229,160,0.3); color: var(--text); padding: 12px 20px; border-radius: var(--radius2); font-size: 13px; z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 640px) {
+  nav { padding: 1rem; flex-wrap: wrap; }
+  .hero h1 { font-size: 2.2rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .sell-perks { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Price<span>Wise</span></div>
+  <div class="nav-search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Search any product..." oninput="filterProducts()" />
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('browse',this)">Browse</button>
+    <button class="nav-tab" onclick="switchTab('compare',this)">Compare <span id="cmp-badge" style="background:rgba(0,102,255,0.2);color:#0066ff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:2px;">0</span></button>
+    <button class="nav-tab" onclick="switchTab('cart',this)">Cart</button>
+    <button class="nav-tab" onclick="switchTab('sell',this)">Sell</button>
+  </div>
+  <button class="cart-btn" onclick="switchTab('cart',null)">
+    🛒 Cart
+    <span class="cart-badge" id="cart-badge">0</span>
+  </button>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">✦ Compare • Save • Buy Smart</div>
+  <h1>Find the <em>best price</em><br/>for anything</h1>
+  <p>Compare prices across Amazon, Walmart, Best Buy and more — in one place. Save money on every purchase.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">50k+</div><div class="hero-stat-label">Products</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">$420</div><div class="hero-stat-label">Avg savings/year</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">12+</div><div class="hero-stat-label">Stores compared</div></div>
+  </div>
+</div>
+
+<main>
+  <!-- BROWSE -->
+  <div id="sec-browse" class="section active">
+    <div class="filters">
+      <button class="filter-chip active" onclick="setCategory('all',this)">All</button>
+      <button class="filter-chip" onclick="setCategory('electronics',this)">💻 Electronics</button>
+      <button class="filter-chip" onclick="setCategory('home',this)">🏠 Home</button>
+      <button class="filter-chip" onclick="setCategory('fashion',this)">👗 Fashion</button>
+      <button class="filter-chip" onclick="setCategory('sports',this)">🏃 Sports</button>
+      <select class="sort-select" id="sort-select" onchange="sortProducts()">
+        <option value="name">Sort: Name</option>
+        <option value="low">Price: Low → High</option>
+        <option value="high">Price: High → Low</option>
+      </select>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </div>
+
+  <!-- COMPARE -->
+  <div id="sec-compare" class="section">
+    <div id="compare-content"></div>
+  </div>
+
+  <!-- CART -->
+  <div id="sec-cart" class="section">
+    <div id="cart-content"></div>
+  </div>
+
+  <!-- SELL -->
+  <div id="sec-sell" class="section">
+    <div class="sell-form">
+      <h2>List your product</h2>
+      <div class="form-grid">
+        <div class="form-field"><label>Product name</label><input type="text" id="s-name" placeholder="e.g. Sony WH-1000XM5" /></div>
+        <div class="form-field"><label>Category</label>
+          <select id="s-cat"><option value="electronics">Electronics</option><option value="home">Home</option><option value="fashion">Fashion</option><option value="sports">Sports</option></select>
+        </div>
+        <div class="form-field"><label>Your price ($)</label><input type="number" id="s-price" placeholder="e.g. 299" /></div>
+        <div class="form-field"><label>Your store name</label><input type="text" id="s-store" placeholder="e.g. TechDeals" /></div>
+        <div class="form-field"><label>Emoji icon</label><input type="text" id="s-icon" placeholder="e.g. 🎧" maxlength="2" /></div>
+      </div>
+      <div class="form-field"><label>Description</label><textarea id="s-desc" placeholder="Describe your product — specs, condition, highlights..."></textarea></div>
+      <button class="btn-list" onclick="listProduct()">List product →</button>
+    </div>
+    <div class="sell-perks">
+      <div class="perk"><div class="perk-icon">💸</div><div class="perk-title">Zero listing fees</div><div class="perk-desc">List as many products as you want for free. Only pay a small fee when you make a sale.</div></div>
+      <div class="perk"><div class="perk-icon">📊</div><div class="perk-title">Win on value</div><div class="perk-desc">Shoppers see your price alongside competitors. Beat the price and win the sale.</div></div>
+      <div class="perk"><div class="perk-icon">🤖</div><div class="perk-title">AI-powered traffic</div><div class="perk-desc">Our AI recommends the best deals to shoppers — great prices get featured automatically.</div></div>
+      <div class="perk"><div class="perk-icon">🌎</div><div class="perk-title">Reach USA-wide</div><div class="perk-desc">Millions of price-conscious shoppers actively comparing before they buy.</div></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  {id:1,name:'MacBook Pro 14"',cat:'electronics',icon:'💻',desc:'Apple M3 chip, 16GB RAM, 512GB SSD',prices:[{s:'Amazon',p:1899},{s:'Best Buy',p:1949},{s:'Walmart',p:1879},{s:'B&H',p:1869}]},
+  {id:2,name:'Sony WH-1000XM5',cat:'electronics',icon:'🎧',desc:'Noise cancelling headphones, 30hr battery',prices:[{s:'Amazon',p:279},{s:'Best Buy',p:299},{s:'Sony Store',p:349},{s:'Walmart',p:269}]},
+  {id:3,name:'Samsung 65" QLED TV',cat:'electronics',icon:'📺',desc:'4K Smart TV, 120Hz, Quantum HDR',prices:[{s:'Amazon',p:1099},{s:'Best Buy',p:1199},{s:'Samsung',p:1299},{s:'Costco',p:999}]},
+  {id:4,name:'iPhone 16 Pro',cat:'electronics',icon:'📱',desc:'A18 Pro, 256GB, titanium design',prices:[{s:'Apple',p:999},{s:'Amazon',p:979},{s:'Best Buy',p:999},{s:'Walmart',p:969}]},
+  {id:5,name:'Dyson V15 Vacuum',cat:'home',icon:'🧹',desc:'Cordless, laser detect, 60min runtime',prices:[{s:'Amazon',p:649},{s:'Dyson',p:749},{s:'Best Buy',p:699},{s:'Target',p:629}]},
+  {id:6,name:'KitchenAid Mixer',cat:'home',icon:'🥣',desc:'5.5 Qt stand mixer, 10 speeds',prices:[{s:'Amazon',p:329},{s:'Williams-Sonoma',p:449},{s:'Target',p:349},{s:'Walmart',p:319}]},
+  {id:7,name:'Nike Air Max 270',cat:'fashion',icon:'👟',desc:"Men's running shoe, breathable mesh",prices:[{s:'Nike',p:150},{s:'Amazon',p:129},{s:'Foot Locker',p:145},{s:"DICK'S",p:139}]},
+  {id:8,name:"Levi's 501 Jeans",cat:'fashion',icon:'👖',desc:'Original fit, 100% cotton denim',prices:[{s:"Levi's",p:89},{s:'Amazon',p:69},{s:"Macy's",p:79},{s:'Target',p:65}]},
+  {id:9,name:'Peloton Bike+',cat:'sports',icon:'🚴',desc:'Auto-resistance, 24" rotating screen',prices:[{s:'Peloton',p:2495},{s:'Amazon',p:2299},{s:'Best Buy',p:2399},{s:"Dick's",p:2349}]},
+  {id:10,name:'Garmin Forerunner 265',cat:'sports',icon:'⌚',desc:'GPS running watch, AMOLED display',prices:[{s:'Amazon',p:349},{s:'Garmin',p:399},{s:'Best Buy',p:379},{s:'REI',p:359}]},
+  {id:11,name:'Instant Pot Duo',cat:'home',icon:'🍲',desc:'6 Qt pressure cooker, 7-in-1 functions',prices:[{s:'Amazon',p:79},{s:'Target',p:89},{s:'Walmart',p:75},{s:'Best Buy',p:84}]},
+  {id:12,name:'iPad Air M2',cat:'electronics',icon:'📲',desc:'11" Liquid Retina, 256GB Wi-Fi',prices:[{s:'Apple',p:749},{s:'Amazon',p:729},{s:'Best Buy',p:749},{s:'Costco',p:719}]},
+];
+
+let extraProducts = [];
+let cart = [];
+let compareIds = [];
+let currentCat = 'all';
+let currentProducts = [...PRODUCTS];
+
+function allProducts() { return [...PRODUCTS, ...extraProducts]; }
+function best(prices) { return prices.reduce((a,b)=>a.p<b.p?a:b); }
+function bestPrice(prices) { return Math.min(...prices.map(p=>p.p)); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  if(name==='compare') renderCompare();
+  if(name==='cart') renderCart();
+}
+
+function setCategory(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  filterProducts();
+}
+
+function filterProducts() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let list = allProducts().filter(p=>{
+    const matchCat = currentCat==='all'||p.cat===currentCat;
+    const matchQ = !q||p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  currentProducts = list;
+  renderGrid(list);
+}
+
+function sortProducts() {
+  const by = document.getElementById('sort-select').value;
+  const sorted = [...currentProducts];
+  if(by==='low') sorted.sort((a,b)=>bestPrice(a.prices)-bestPrice(b.prices));
+  else if(by==='high') sorted.sort((a,b)=>bestPrice(b.prices)-bestPrice(a.prices));
+  else sorted.sort((a,b)=>a.name.localeCompare(b.name));
+  renderGrid(sorted);
+}
+
+function renderGrid(products) {
+  document.getElementById('products-grid').innerHTML = products.map(p=>{
+    const b = best(p.prices);
+    const inCmp = compareIds.includes(p.id);
+    const inCart = cart.find(c=>c.id===p.id);
+    return `<div class="product-card ${inCmp?'in-compare':''}">
+      <span class="product-icon">${p.icon}</span>
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.desc}</div>
+      <div class="price-list">
+        ${p.prices.map(pr=>`<div class="price-item">
+          <span class="price-store">${pr.s}</span>
+          <span class="price-val ${pr.p===b.p?'best':''}">$${pr.p.toLocaleString()}${pr.p===b.p?'<span class="best-label">best</span>':''}</span>
+        </div>`).join('')}
+      </div>
+      <div class="card-btns">
+        <button class="btn-cmp ${inCmp?'on':''}" onclick="toggleCompare(${p.id})">${inCmp?'✓ Added':'⇄ Compare'}</button>
+        <button class="btn-add ${inCart?'on':''}" onclick="addCart(${p.id})">${inCart?'✓ In cart':'+ Cart'}</button>
+      </div>
+    </div>`;
+  }).join('') || '<div style="text-align:center;padding:3rem;color:#555;grid-column:1/-1;">No products found.</div>';
+}
+
+function toggleCompare(id) {
+  if(compareIds.includes(id)) {
+    compareIds = compareIds.filter(i=>i!==id);
+  } else {
+    if(compareIds.length>=4){showToast('Max 4 products to compare');return;}
+    compareIds.push(id);
+    showToast('Added to compare!');
+  }
+  document.getElementById('cmp-badge').textContent = compareIds.length;
+  filterProducts();
+}
+
+function renderCompare() {
+  const prods = allProducts().filter(p=>compareIds.includes(p.id));
+  const el = document.getElementById('compare-content');
+  if(!prods.length){
+    el.innerHTML = `<div class="compare-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      <h3 style="font-family:'Syne',sans-serif;margin-bottom:8px;">Nothing to compare yet</h3>
+      <p>Go to Browse and click "Compare" on up to 4 products.</p>
+    </div>`;
+    return;
+  }
+  const allStores=[...new Set(prods.flatMap(p=>p.prices.map(pr=>pr.s)))].slice(0,5);
+  const lowestTotal = Math.min(...prods.map(p=>bestPrice(p.prices)));
+  el.innerHTML = `
+    <div style="overflow-x:auto;">
+    <table class="compare-table">
+      <thead><tr>
+        <th style="min-width:120px;"></th>
+        ${prods.map(p=>`<th class="product-header">${p.icon} ${p.name}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        <tr><td class="label">Description</td>${prods.map(p=>`<td style="color:#888;font-size:12px;">${p.desc}</td>`).join('')}</tr>
+        <tr><td class="label">Best price</td>${prods.map(p=>{const b=best(p.prices);const isLowest=b.p===lowestTotal;return `<td class="${isLowest?'winner-cell':''}">$${b.p.toLocaleString()} <span style="font-size:11px;color:#888;">@ ${b.s}</span>${isLowest?'<span class="winner-tag">best deal</span>':''}</td>`;}).join('')}</tr>
+        ${allStores.map(store=>`<tr><td class="label">${store}</td>${prods.map(p=>{const pr=p.prices.find(x=>x.s===store);return `<td>${pr?`<span style="font-weight:500;">$${pr.p.toLocaleString()}</span>`:'<span style="color:#444;">—</span>'}</td>`;}).join('')}</tr>`).join('')}
+        <tr><td class="label"></td>${prods.map(p=>`<td><button onclick="addCart(${p.id})" style="padding:6px 14px;border-radius:8px;background:var(--accent);color:#000;border:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">+ Add to cart</button></td>`).join('')}</tr>
+      </tbody>
+    </table>
+    </div>
+    <button class="btn-ai" onclick="aiRecommend()">✦ AI recommendation</button>
+    <div class="ai-rec" id="ai-rec" style="display:none;"></div>`;
+}
+
+async function aiRecommend() {
+  const prods = allProducts().filter(p=>compareIds.includes(p.id));
+  const box = document.getElementById('ai-rec');
+  box.style.display = 'block';
+  box.innerHTML = '<div class="ai-rec-header">✦ Analyzing deals</div><div class="loading-dots"><span></span><span></span><span></span></div>';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:`Compare these products briefly and recommend the best one to buy. 3-4 sentences, focus on value for money:\n${prods.map(p=>`${p.name}: best $${bestPrice(p.prices)} at ${best(p.prices).s}. ${p.desc}`).join('\n')}`}]})});
+    const data = await res.json();
+    box.innerHTML = '<div class="ai-rec-header">✦ AI recommendation</div>' + (data.content?.map(c=>c.text||'').join('')||'Could not generate.');
+  } catch(e) { box.innerHTML = 'Error — please try again.'; }
+}
+
+function addCart(id) {
+  const p = allProducts().find(x=>x.id===id);
+  if(!p) return;
+  if(cart.find(c=>c.id===id)){showToast('Already in cart!');return;}
+  const b = best(p.prices);
+  cart.push({id:p.id,name:p.name,icon:p.icon,store:b.s,price:b.p});
+  const badge = document.getElementById('cart-badge');
+  badge.textContent = cart.length;
+  badge.style.display = 'flex';
+  showToast(`${p.name} added to cart!`);
+  filterProducts();
+}
+
+function removeCart(id) {
+  cart = cart.filter(c=>c.id!==id);
+  const badge = document.getElementById('cart-badge');
+  badge.textContent = cart.length;
+  badge.style.display = cart.length?'flex':'none';
+  filterProducts();
+  renderCart();
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-content');
+  if(!cart.length){
+    el.innerHTML = '<div class="cart-empty"><span>🛒</span>Your cart is empty.<br><br><button onclick="switchTab(\'browse\',null)" style="padding:10px 24px;border-radius:40px;background:var(--accent);color:#000;border:none;font-family:\'Syne\',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Browse products</button></div>';
+    return;
+  }
+  const total = cart.reduce((s,c)=>s+c.price,0);
+  el.innerHTML = `
+    <div style="max-width:600px;">
+      <h2 style="font-size:22px;margin-bottom:1.5rem;">${cart.length} item${cart.length>1?'s':''} — best price selected</h2>
+      ${cart.map(c=>`<div class="cart-item">
+        <div class="cart-icon">${c.icon}</div>
+        <div class="cart-info"><div class="cart-name">${c.name}</div><div class="cart-store">Best price via ${c.store}</div></div>
+        <div class="cart-price">$${c.price.toLocaleString()}</div>
+        <button class="cart-remove" onclick="removeCart(${c.id})" aria-label="Remove">✕</button>
+      </div>`).join('')}
+      <div class="cart-total-row">
+        <div class="cart-total-label">Total</div>
+        <div class="cart-total-price">$${total.toLocaleString()}</div>
+      </div>
+      <button class="btn-checkout" onclick="checkout()">🔒 Secure checkout — $${total.toLocaleString()}</button>
+      <p style="text-align:center;font-size:12px;color:#555;margin-top:12px;">✦ Best prices verified across all stores</p>
+    </div>`;
+}
+
+function checkout() {
+  alert('Checkout flow coming soon!\n\nIn production this connects to Stripe or your payment processor.\n\nYour cart: ' + cart.map(c=>c.name+' $'+c.price).join(', '));
+}
+
+function listProduct() {
+  const name = document.getElementById('s-name').value.trim();
+  const price = parseFloat(document.getElementById('s-price').value);
+  const store = document.getElementById('s-store').value.trim();
+  const cat = document.getElementById('s-cat').value;
+  const icon = document.getElementById('s-icon').value.trim() || '📦';
+  const desc = document.getElementById('s-desc').value.trim();
+  if(!name||!price||!store){alert('Please fill in product name, price and store name.');return;}
+  const newId = Date.now();
+  extraProducts.push({id:newId,name,cat,icon,desc:desc||'Listed by seller',prices:[{s:store,p:price}]});
+  showToast(`${name} listed successfully!`);
+  document.getElementById('s-name').value='';
+  document.getElementById('s-price').value='';
+  document.getElementById('s-store').value='';
+  document.getElementById('s-icon').value='';
+  document.getElementById('s-desc').value='';
+  switchTab('browse',null);
+  document.querySelectorAll('.nav-tab')[0].classList.add('active');
+  currentCat='all';
+  document.querySelectorAll('.filter-chip').forEach((c,i)=>{if(i===0)c.classList.add('active');else c.classList.remove('active');});
+  filterProducts();
+}
+
+filterProducts();
+</script>
+</body>
+</html>
